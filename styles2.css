@@ -1,0 +1,140 @@
+/* Estilos globales */
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 150vh;
+    margin: 0;
+    padding: 10px;
+    transition: background 0.3s ease-in-out;
+}
+
+#registro {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Animación de entrada para el formulario */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#registro:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #1e88e5;
+    font-size: 24px;
+    font-weight: 600;
+    animation: fadeInText 1.5s ease-in-out;
+}
+
+/* Animación de entrada para el texto */
+@keyframes fadeInText {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+label {
+    display: block;
+    text-align: left;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #1976d2;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    font-size: 15px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+    border-color: #1976d2;
+    box-shadow: 0 0 8px rgba(25, 118, 210, 0.5);
+    outline: none;
+}
+
+button {
+    background: linear-gradient(135deg, #1976d2, #0d47a1);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
+    animation: pulse 1.5s infinite;
+}
+
+/* Animación de pulso para el botón */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+button:hover {
+    background: linear-gradient(135deg, #0d47a1, #1565c0);
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+#btn-regresar {
+    display: inline-block;
+    margin-bottom: 15px;
+    color: #1976d2;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+#btn-regresar:hover {
+    text-decoration: underline;
+    color: #0d47a1;
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 480px) {
+    body {
+        height: auto;
+        align-items: flex-start;
+        padding: 12px;
+    }
+
+    #registro {
+        width: 90%;
+        max-width: 100%;
+        padding: 25px;
+    }
+
+    input, button {
+        font-size: 15px;
+        padding: 12px;
+    }
+}

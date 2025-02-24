@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Registro</title>
+  <!-- Aquí agregas el enlace al archivo CSS -->
+  <link rel="stylesheet" type="text/css" href="styles2.css">
+  
+  <div class="login-container">
+  <a id="btn-regresar" href="index.html">Regresar</a>
+
+  <h2>Iniciar Sesión</h2>
+  <form id="login-form">
+    <label for="username">Usuario:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Iniciar Sesión</button>
+  </form>
+
+  <div id="account-actions" style="display: none;">
+    <h2>Acciones de la cuenta</h2>
+    <button id="check-balance">Revisar Saldo</button>
+    <button id="withdraw">Retirar</button>
+    <button id="deposit">Depositar</button>
+
+    <!-- Campos de entrada para retirar y depositar -->
+    <div id="withdraw-section" style="display: none;">
+      <label for="withdraw-amount">Cantidad a retirar:</label>
+      <input type="number" id="withdraw-amount" min="0">
+      <button id="confirm-withdraw">Confirmar Retiro</button>
+    </div>
+
+    <div id="deposit-section" style="display: none;">
+      <label for="deposit-amount">Cantidad a depositar:</label>
+      <input type="number" id="deposit-amount" min="0">
+      <button id="confirm-deposit">Confirmar Depósito</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const loginForm = document.getElementById('login-form');
+const accountActions = document.getElementById('account-actions');
+const withdrawSection = document.getElementById('withdraw-section');
+const depositSection = document.getElementById('deposit-section');
+
+// Mostrar/ocultar secciones de retiro y depósito
+document.getElementById('withdraw').addEventListener('click', () => {
+  withdrawSection.style.display = 'block';
+  depositSection.style.display = 'none';
+});
+
+document.getElementById('deposit').addEventListener('click', () => {
+  depositSection.style.display = 'block';
+  withdrawSection.style.display = 'none';
+});
+
+// Lógica para revisar saldo
+document.getElementById('check-balance').addEventListener('click', async () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Debes iniciar sesión primero');
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost:5001/check-balance', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ email: document.getElementById('username').value })
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      alert(`Tu saldo actual es: $${result.balance}`);
+    } else {
+      const errorData = await response.json();
+      alert(errorData.error || 'Error al obtener el saldo');
+    }
+  } catch (error) {
+    console.error('Error al conectar con el servidor:', error);
+    alert('No se pudo completar la solicitud');
+  }
+});
+
+// Lógica para confirmar retiro
+document.getElementById('confirm-withdraw').addEventListener('click', async () => {
+  const token = localStorage.getItem('token');
+  const amount = document.getElementById('withdraw-amount').value;
+
+  if (!token) {
+    alert('Debes iniciar sesión primero');
+    return;
+  }
+
+  if (!amount || amount <= 0) {
+    alert('Cantidad inválida');
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost:5001/withdraw', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        email: document.getElementById('username').value,
+        amount: parseFloat(amount)
+      })
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      alert(`Retiro exitoso. Tu nuevo saldo es: $${result.balance}`);
+      withdrawSection.style.display = 'none'; // Ocultar sección de retiro
+    } else {
+      const errorData = await response.json();
+      alert(errorData.error || 'Error al retirar fondos');
+    }
+  } catch (error) {
+    console.error('Error al conectar con el servidor:', error);
+    alert('No se pudo completar la solicitud');
+  }
+});
+
+// Lógica para confirmar depósito
+document.getElementById('confirm-deposit').addEventListener('click', async () => {
+  const token = localStorage.getItem('token');
+  const amount = document.getElementById('deposit-amount').value;
+
+  if (!token) {
+    alert('Debes iniciar sesión primero');
+    return;
+  }
+
+  if (!amount || amount <= 0) {
+    alert('Cantidad inválida');
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost:5001/deposit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        email: document.getElementById('username').value,
+        amount: parseFloat(amount)
+      })
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      alert(`Depósito exitoso. Tu nuevo saldo es: $${result.balance}`);
+      depositSection.style.display = 'none'; // Ocultar sección de depósito
+    } else {
+      const errorData = await response.json();
+      alert(errorData.error || 'Error al depositar fondos');
+    }
+  } catch (error) {
+    console.error('Error al conectar con el servidor:', error);
+    alert('No se pudo completar la solicitud');
+  }
+});
+
+// Lógica para iniciar sesión
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('username').value;
+  const contraseña = document.getElementById('password').value;
+
+  try {
+    const response = await fetch('http://localhost:5001/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, contraseña }),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      alert('Inicio de sesión exitoso');
+      localStorage.setItem('token', result.token);
+      accountActions.style.display = 'block'; // Mostrar acciones de la cuenta
+    } else {
+      const errorData = await response.json();
+      alert(errorData.error || 'Credenciales incorrectas');
+    }
+  } catch (error) {
+    console.error('Error al conectar con el servidor:', error);
+    alert('No se pudo completar la solicitud');
+  }
+});
+</script>
