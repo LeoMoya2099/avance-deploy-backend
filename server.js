@@ -41,7 +41,7 @@ const User = mongoose.model('User', UserSchema);
 
 
 // Ruta para revisar el saldo
-app.post('/check-balance', async (req, res) => {
+app.post('/api/check-balance', async (req, res)=> {
     const { email } = req.body;
 
     try {
@@ -57,7 +57,7 @@ app.post('/check-balance', async (req, res) => {
 });
 
 // Ruta para depositar dinero
-app.post('/deposit', async (req, res) => {
+app.post('/api/deposit', async (req, res) => {
     const { email, amount } = req.body;
 
     if (!amount || amount <= 0) {
@@ -99,7 +99,7 @@ app.delete('/usuarios/:email', async (req, res) => {
 
 
 // Ruta para retirar dinero
-app.post('/withdraw', async (req, res) => {
+app.post('/api/withdraw', async (req, res)=> {
     const { email, amount } = req.body;
 
     if (!amount || amount <= 0) {
@@ -126,7 +126,7 @@ app.post('/withdraw', async (req, res) => {
 });
 
 // Ruta para registrar usuarios
-app.post('/registro', async (req, res) => {
+app.post('/api/registro', async (req, res)  => {
     const { nombre, apellido, email, contraseña } = req.body;
 
     try {
@@ -141,7 +141,7 @@ app.post('/registro', async (req, res) => {
 });
 
 // Ruta para verificar usuarios (iniciar sesión)
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { email, contraseña } = req.body;
 
     try {
